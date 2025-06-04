@@ -1,6 +1,6 @@
-'use client';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+"use client";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -8,33 +8,39 @@ export default function Dashboard() {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
+    const token = localStorage.getItem("token");
+    const userData = localStorage.getItem("user");
 
     if (!token) {
-      router.push('/login');
+      router.push("/login");
       return;
     }
 
-    if (userData && userData !== 'undefined') {
+    if (userData && userData !== "undefined") {
       const parsedUser = JSON.parse(userData);
       setUser(parsedUser);
     }
   }, [router]);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('tokenType');
-    localStorage.removeItem('user');
-    router.push('/login');
+    localStorage.removeItem("token");
+    localStorage.removeItem("tokenType");
+    localStorage.removeItem("user");
+    router.push("/login");
   };
 
   const getInitials = (name) => {
-    return name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U';
+    return (
+      name
+        ?.split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase() || "U"
+    );
   };
 
   const formatMoney = (amount) => {
-    return new Intl.NumberFormat('mn-MN').format(amount);
+    return new Intl.NumberFormat("mn-MN").format(amount);
   };
 
   if (!user) {
@@ -52,10 +58,51 @@ export default function Dashboard() {
       <header className="dashboard-header">
         <nav className="dashboard-nav">
           <div className="dashboard-logo"> Голомт Банк</div>
+          {/* Гүйлгээ товч */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              marginBottom: 16,
+            }}
+          >
+            <button
+              className="btn-transfer"
+              onClick={() => router.push("/dashboard/transfer")}
+              style={{
+                padding: "8px 20px",
+                display: "flex",
+                alignItems: "center",
+                fontWeight: 600,
+                background: "#667eea",
+                color: "#fff",
+                border: "none",
+                borderRadius: 6,
+                cursor: "pointer",
+              }}
+            >
+              Гүйлгээ
+            </button>
+            <button
+              className="btn-history"
+              onClick={() => router.push(`/dashboard/transactions?accountId=2`)}
+              style={{
+                padding: "8px 20px",
+                display: "flex",
+                alignItems: "center",
+                fontWeight: 600,
+                background: "#667eea",
+                color: "#fff",
+                border: "none",
+                borderRadius: 6,
+                cursor: "pointer",
+              }}
+            >
+              Гүйлгээний түүх
+            </button>
+          </div>
           <div className="dashboard-user">
-            <div className="user-avatar">
-              {getInitials(user.name)}
-            </div>
+            <div className="user-avatar">{getInitials(user.name)}</div>
             <span>{user.name}</span>
             <button onClick={handleLogout} className="btn-logout">
               Гарах
@@ -70,9 +117,11 @@ export default function Dashboard() {
           <h2 className="section-title">Таны дансууд</h2>
           <div className="accounts-grid">
             {user.accounts?.map((account, index) => (
-              <div 
-                key={account.id} 
-                className={`account-card ${selectedAccount === index ? 'active' : ''}`}
+              <div
+                key={account.id}
+                className={`account-card ${
+                  selectedAccount === index ? "active" : ""
+                }`}
                 onClick={() => setSelectedAccount(index)}
               >
                 <div className="bank-info">
@@ -95,7 +144,7 @@ export default function Dashboard() {
           <div className="account-details">
             <div className="detail-card">
               <h3>Дансны дэлгэрэнгүй мэдээлэл</h3>
-              
+
               <div className="account-main-info">
                 <div className="balance-display">
                   <div className="balance-label">Боломжтой үлдэгдэл</div>
@@ -104,41 +153,53 @@ export default function Dashboard() {
                   </div>
                   <div className="currency">{currentAccount.currency}</div>
                 </div>
-                
+
                 <div className="account-info-grid">
                   <div className="info-item">
                     <div className="info-label">Дансны дугаар</div>
-                    <div className="info-value">{currentAccount.accountNumber}</div>
+                    <div className="info-value">
+                      {currentAccount.accountNumber}
+                    </div>
                   </div>
-                  
+
                   <div className="info-item">
                     <div className="info-label">Банк</div>
                     <div className="info-value">{currentAccount.bank.name}</div>
                   </div>
-                  
+
                   <div className="info-item">
                     <div className="info-label">SWIFT код</div>
-                    <div className="info-value">{currentAccount.bank.swiftCode}</div>
+                    <div className="info-value">
+                      {currentAccount.bank.swiftCode}
+                    </div>
                   </div>
-                  
+
                   <div className="info-item">
                     <div className="info-label">Дансны төрөл</div>
-                    <div className="info-value">{currentAccount.accountType}</div>
+                    <div className="info-value">
+                      {currentAccount.accountType}
+                    </div>
                   </div>
-                  
+
                   <div className="info-item">
                     <div className="info-label">Статус</div>
                     <div className="info-value">
-                      <span className={`status ${currentAccount.isActive ? 'active' : 'inactive'}`}>
-                        {currentAccount.isActive ? 'Идэвхтэй' : 'Идэвхгүй'}
+                      <span
+                        className={`status ${
+                          currentAccount.isActive ? "active" : "inactive"
+                        }`}
+                      >
+                        {currentAccount.isActive ? "Идэвхтэй" : "Идэвхгүй"}
                       </span>
                     </div>
                   </div>
-                  
+
                   <div className="info-item">
                     <div className="info-label">Үүсгэсэн огноо</div>
                     <div className="info-value">
-                      {new Date(currentAccount.createdAt).toLocaleDateString('mn-MN')}
+                      {new Date(currentAccount.createdAt).toLocaleDateString(
+                        "mn-MN"
+                      )}
                     </div>
                   </div>
                 </div>
@@ -156,28 +217,27 @@ export default function Dashboard() {
                 <div className="info-label">Нэр</div>
                 <div className="info-value">{user.name}</div>
               </div>
-              
+
               <div className="info-item">
                 <div className="info-label">Утас</div>
                 <div className="info-value">{user.phone}</div>
               </div>
-              
+
               <div className="info-item">
                 <div className="info-label">И-мэйл</div>
                 <div className="info-value">{user.email}</div>
               </div>
-              
+
               <div className="info-item">
                 <div className="info-label">Бүртгүүлсэн огноо</div>
                 <div className="info-value">
-                  {new Date(user.createdAt).toLocaleDateString('mn-MN')}
+                  {new Date(user.createdAt).toLocaleDateString("mn-MN")}
                 </div>
               </div>
             </div>
           </div>
         </div>
       </main>
-
     </div>
   );
 }
